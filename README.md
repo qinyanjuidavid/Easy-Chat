@@ -5,7 +5,6 @@ Recap on django channels
 
     - For the routing.py my code goes as follows 
     ```
-    Python
     from channels.routing import ProtocolTypeRouter, URLRouter
     from channels.auth import AuthMiddlewareStack
     import chat.routing
