@@ -15,6 +15,6 @@ Recap on django channels
             )
           ),
         })
-    ```
+ ```
     
 > The Django Channels does not include the routing.py in the root directory of the project but instead uses the code in the asgi
