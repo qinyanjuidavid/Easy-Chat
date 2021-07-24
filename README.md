@@ -3,6 +3,7 @@ Recap on django channels
 ## Routing.py
 
     - For the routing.py my code goes as follows 
+    
     ```
     from channels.routing import ProtocolTypeRouter, URLRouter
     from channels.auth import AuthMiddlewareStack
