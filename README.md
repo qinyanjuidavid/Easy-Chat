@@ -1,11 +1,9 @@
 # Chat
 Recap on django channels
-
-    - Channels Read the doc does not include the routings.py in the projects root folder but instead includes it in the asgi, Quite a missed understanding
+## Routing.py
 
     - For the routing.py my code goes as follows 
     ```
-    Python
     from channels.routing import ProtocolTypeRouter, URLRouter
     from channels.auth import AuthMiddlewareStack
     import chat.routing
@@ -18,3 +16,4 @@ Recap on django channels
         ),
     })
     ```
+    > The Django Channels does not include the routing.py in the root directory of the project but instead uses the code in the asgi
