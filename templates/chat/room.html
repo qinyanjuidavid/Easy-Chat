@@ -1,5 +1,8 @@
-{%extends 'chat/base.html'%} {%block title%} Chat Room {%endblock%} helloooo
+{%load static%}
+{%extends 'chat/base.html'%} {%block title%} Chat Room {%endblock%}
+{%block style%}{%endblock%}
 {%block content%}
+
 <div class="col-sm-8">
   <div class="form-group green-border-focus">
     <label for="chat-log">Chat Log</label>
@@ -31,7 +34,7 @@
 {{ room_name|json_script:"room-name" }}
 <script>
   const roomName = JSON.parse(document.getElementById("room-name").textContent);
-
+// Reconnecting
   const chatSocket = new WebSocket(
     "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
   );
@@ -59,9 +62,13 @@
     chatSocket.send(
       JSON.stringify({
         message: message,
+        command: "new_messages",
+        // 'from': username,
       })
     );
     messageInputDom.value = "";
   };
 </script>
-{%endblock%} {%block javascript%} {%endblock%}
+{%endblock%} {%block javascript%}
+<script src="{%static 'js/reconnecting-websocket.js'%}"></script>
+ {%endblock%}
