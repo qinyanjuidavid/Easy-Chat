@@ -253,3 +253,5 @@ class ChatConsumer(WebsocketConsumer):
           'message': message
       }))
 ```
+
+- There was a failure in my code due to the redis version that i was using i had to download redis from [redis](https://github.com/tporadowski/redis/releases)
