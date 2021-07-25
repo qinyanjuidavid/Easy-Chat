@@ -1,9 +1,41 @@
+{%extends 'chat/base.html'%}
 {%load static%}
-{%extends 'chat/base.html'%} {%block title%} Chat Room {%endblock%}
+ {%block title%} Chat Room {%endblock%}
 {%block style%}{%endblock%}
 {%block content%}
 
-<div class="col-sm-8">
+
+	<div class="content">
+		<div class="contact-profile">
+			<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+			<p>{{user.username}}</p>
+			<div class="social-media">
+				<i class="fa fa-facebook" aria-hidden="true"></i>
+				<i class="fa fa-twitter" aria-hidden="true"></i>
+				 <i class="fa fa-instagram" aria-hidden="true"></i>
+			</div>
+		</div>
+
+		<div class="messages">
+			<ul id="chat-log">
+				<li class="sent">
+					<img src="http://emilcarlsson.se/assets/mikeross.png" alt="" />
+				<li class="replies">
+					<img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+
+				</li>
+			</ul>
+		</div>
+		<div class="message-input">
+			<div class="wrap">
+			<input type="text" id="chat-message-input" placeholder="Write your message..." />
+			<i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+			<button id="chat-message-submit" class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+			</div>
+		</div>
+	</div>
+
+<!-- <div class="col-sm-8">
   <div class="form-group green-border-focus">
     <label for="chat-log">Chat Log</label>
     <textarea
@@ -30,25 +62,44 @@
     type="button"
     value="Send"
   />
-</div>
+</div> -->
 {{ room_name|json_script:"room-name" }}
 <script>
   const roomName = JSON.parse(document.getElementById("room-name").textContent);
+  var username={{username}};
 // Reconnecting
   const chatSocket = new WebSocket(
     "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
   );
 
+
+  chatSocket.onopen=function(e){
+    fetchMessages()
+  }
+
+
   chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
-    document.querySelector("#chat-log").value += data.message + "\n";
+
+
+    if (data['command']==="messages"){
+      for (let i=0; i<data["messages"].length;i++){
+        createMessage(data["messages"][i]);
+      }
+    }else if(data['command']==='new_message'){
+      createMessage(data['message']);
+    }
+
+
+
+    // document.querySelector("#chat-log").value += data.message + "\n";
   };
 
   chatSocket.onclose = function (e) {
     console.error("Chat socket closed unexpectedly");
   };
 
-  document.querySelector("#chat-message-input").focus();
+  // document.querySelector("#chat-message-input").focus();
   document.querySelector("#chat-message-input").onkeyup = function (e) {
     if (e.keyCode === 13) {
       // enter, return
@@ -61,13 +112,37 @@
     const message = messageInputDom.value;
     chatSocket.send(
       JSON.stringify({
-        message: message,
-        command: "new_messages",
-        // 'from': username,
+        "message": message,
+        "command": "new_messages",
+        'from': username,
       })
     );
     messageInputDom.value = "";
   };
+
+
+  function fetchMessages(){
+    chatSocket.send(JSON.stringify({"command":"fetch_messages"}));
+  }
+
+  function createMessage(data){
+    var author =data['author'];
+			var msgListTag=document.createElement('li');
+			var imgTag=document.createElement('img');
+			var pTag=document.createElement('p');
+			pTag.textContent=data.content;
+			imgTag.src="http://emilcarlsson.se/assets/mikeross.png"
+			if (author === username){
+				msgListTag.className='sent';
+			}
+			else{
+				msgListTag.className='replies';
+			}
+			msgListTag.appendChild(imgTag);
+			msgListTag.appendChild(pTag);
+			document.querySelector('#chat-log').appendChild(msgListTag);
+				}
+
 </script>
 {%endblock%} {%block javascript%}
 <script src="{%static 'js/reconnecting-websocket.js'%}"></script>
