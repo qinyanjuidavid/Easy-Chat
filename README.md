@@ -182,8 +182,8 @@ class ChatConsumer(WebsocketConsumer):
 
 - To start the redis port on our terminal we will run this command;
 
-  > docker run -p 6379:6379 -d redis:5
+> docker run -p 6379:6379 -d redis:5
 
 - The next step will be to install the channels_redis in our project to do that we will use pip for this case,
 
-  > python -m pip install channels_redis
+> python -m pip install channels_redis
