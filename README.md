@@ -187,3 +187,16 @@ class ChatConsumer(WebsocketConsumer):
 - The next step will be to install the channels_redis in our project to do that we will use pip for this case,
 
 > python -m pip install channels_redis
+
+- Basic a channels layer is what enables our chat application to send messages to the clients in the room, the channels layer is usually configured in the settings.py and the code goes as follows;
+
+```
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+```
