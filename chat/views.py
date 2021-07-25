@@ -1,7 +1,5 @@
-from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-from django.utils.safestring import mark_safe
-import json
+from django.http import HttpResponse, JsonResponse
 
 
 def index(request):
