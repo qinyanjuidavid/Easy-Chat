@@ -173,3 +173,17 @@ class ChatConsumer(WebsocketConsumer):
           'message': message
       }))
 ```
+
+## Enabling the channel layer
+
+- In order for us to enable the channel layer we will use redis to store our messages. In this case we will install redis using the docker To install redis using docker we will type this command in our terminal;
+
+> docker pull redis
+
+- To start the redis port on our terminal we will run this command;
+
+  > docker run -p 6379:6379 -d redis:5
+
+- The next step will be to install the channels_redis in our project to do that we will use pip for this case,
+
+  > python -m pip install channels_redis
