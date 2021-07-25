@@ -61,7 +61,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'src.wsgi.application'
-ASGI_APPLICATION="src.routing.application"
+ASGI_APPLICATION = "src.routing.application"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

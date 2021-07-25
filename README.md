@@ -150,3 +150,27 @@ class Message(models.Model):
        return Message.objects.order_by('-timestamp').all()[:10]
 
 ```
+
+## Consumer.py
+
+- The basic code for the consumer goes as follows:
+
+```
+import json
+from channels.generic.websocket import WebsocketConsumer
+
+
+class ChatConsumer(WebsocketConsumer):
+  def connect(self):
+      self.accept()
+
+  def disconnect(self, close_code):
+      pass
+
+  def receive(self, text_data):
+      text_data_json = json.loads(text_data)
+      message = text_data_json['message']
+      self.send(text_data=json.dumps({
+          'message': message
+      }))
+```
