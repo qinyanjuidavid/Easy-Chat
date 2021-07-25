@@ -1,7 +1,33 @@
 {%extends 'chat/base.html'%} {%block title%} Chat Room {%endblock%} helloooo
-{%block content%} <textarea id="chat-log" cols="50" rows="10"></textarea><br />
-<input id="chat-message-input" type="text" size="50" /><br />
-<input id="chat-message-submit" type="button" value="Send" />
+{%block content%}
+<div class="col-sm-8">
+  <div class="form-group green-border-focus">
+    <label for="chat-log">Chat Log</label>
+    <textarea
+      class="form-control"
+      id="chat-log"
+      col="50"
+      rows="10"
+      readonly
+    ></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="chat-message-input" class="form-label">Message*</label>
+    <input
+      type="text"
+      class="form-control"
+      name="chat-message-input"
+      id="chat-message-input"
+      placeholder="write your message?"
+    />
+  </div>
+  <input
+    class="btn btn-outline-primary mt-2"
+    id="chat-message-submit"
+    type="button"
+    value="Send"
+  />
+</div>
 {{ room_name|json_script:"room-name" }}
 <script>
   const roomName = JSON.parse(document.getElementById("room-name").textContent);
