@@ -1,170 +1,170 @@
-{%extends 'chat/base.html'%}
-{%load static%}
- {%block title%} Chat Room {%endblock%}
-{%block style%}{%endblock%}
-{%block content%}
+{%extends 'chat/base.html'%} {%load static%} {%block title%} Chat Room
+{%endblock%} {%block style%}{%endblock%} {%block content%}
 <style type="text/css">
-.messages ul li {
-  display: inline-block;
-  clear: both;
-  float: left;
-  margin: 15px 15px 5px 15px;
-  width: calc(100% - 25px);
-  font-size: 0.9em;
-}
-.messages ul li:nth-last-child(1) {
-  margin-bottom: 20px;
-}
-.messages ul li.sent img {
-  margin: 6px 8px 0 0;
-}
-.messages ul li.sent p {
-  background: #435f7a;
-  color: #f5f5f5;
-}
-.messages ul li.replies img {
-  float: right;
-  margin: 6px 0 0 8px;
-}
-.messages ul li.replies p {
-  background: #f5f5f5;
-  float: right;
-}
-.messages ul li img {
-  width: 22px;
-  border-radius: 50%;
-  float: left;
-}
-.messages ul li p {
-  display: inline-block;
-  padding: 10px 15px;
-  border-radius: 20px;
-  max-width: 205px;
-  line-height: 130%;
-}
-@media screen and (min-width: 735px) {
-.messages ul li p {
-    max-width: 300px;
+  .messages ul li {
+    display: inline-block;
+    clear: both;
+    float: left;
+    margin: 15px 15px 5px 15px;
+    width: calc(100% - 25px);
+    font-size: 0.9em;
   }
-}
+  .messages ul li:nth-last-child(1) {
+    margin-bottom: 20px;
+  }
+  .messages ul li.sent img {
+    /* margin: 6px 8px 0 0; */
+  }
+  .messages ul li.sent p {
+    background: #435f7a;
+    color: #f5f5f5;
+  }
+  .messages ul li.replies img {
+    float: right;
+    margin: 6px 0 0 8px;
+  }
+  .messages ul li.replies p {
+    background: #f5f5f5;
+    float: right;
+  }
+  .messages ul li img {
+    width: 22px;
+    border-radius: 50%;
+    float: left;
+  }
+  .messages ul li p {
+    display: inline-block;
+    padding: 10px 15px;
+    border-radius: 20px;
+    max-width: 205px;
+    line-height: 130%;
+  }
+  @media screen and (min-width: 735px) {
+    .messages ul li p {
+      max-width: 300px;
+    }
+  }
 </style>
-
-<div class="col-sm-8">
-<div class="card">
-  <div class="card-header">
-    {{user.username|title}}
+<div class="row">
+  <div class="col-sm-3">
+    <div class="overflow-auto" style=height:390px;>
+    Dummy side 1
     </div>
+  </div>
+  <div class="col-sm-9">
+    <div class="overflow-auto" style=height:390px;>
       <div class="messages">
         <ul id="chat-log">
-  				<li class="sent">
-  					<img src="" alt="" />
-  				<li class="replies">
-  					<img src="" alt="" />
-  				</li>
-  			</ul>
+          <li class="sent">
+            <img src="" alt="" />
+          </li>
+
+          <li class="replies">
+            <img src="" alt="" />
+          </li>
+        </ul>
       </div>
-    <div class="card-body">
-          <div class="mb-3">
-            <label for="chat-message-input" class="form-label">Message*</label>
-            <input
-              type="text"
-              class="form-control"
-              name="chat-message-input"
-              id="chat-message-input"
-              placeholder="write your message..."
-            />
-          </div>
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="chat-message-input" class="form-label">Message*</label>
+          <input
+            type="text"
+            class="form-control"
+            name="chat-message-input"
+            id="chat-message-input"
+            placeholder="write your message..."
+          />
+        </div>
         <input
           class="btn btn-outline-primary mt-2"
           id="chat-message-submit"
           type="button"
           value="Send"
         />
+      </div>
+    </div>
+  </div>
 </div>
-  </div>
-  </div>
 
 {{ room_name|json_script:"room-name" }}
 <script src="{%static 'js/reconnecting-websocket.js' %}"></script>
 <script>
-  const roomName = JSON.parse(document.getElementById("room-name").textContent);
-  var username={{username}};
-// Reconnecting
-  const chatSocket = new WebSocket(
-    "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
-  );
-
-
-  chatSocket.onopen=function(e){
-    fetchMessages()
-  }
-
-
-  chatSocket.onmessage = function (e) {
-    const data = JSON.parse(e.data);
-
-
-    if (data['command']==="messages"){
-      for (let i=0; i<data["messages"].length;i++){
-        createMessage(data["messages"][i]);
-      }
-    }else if(data['command']==='new_message'){
-      createMessage(data['message']);
-    }
-
-
-
-    // document.querySelector("#chat-log").value += data.message + "\n";
-  };
-
-  chatSocket.onclose = function (e) {
-    console.error("Chat socket closed unexpectedly");
-  };
-
-  // document.querySelector("#chat-message-input").focus();
-  document.querySelector("#chat-message-input").onkeyup = function (e) {
-    if (e.keyCode === 13) {
-      // enter, return
-      document.querySelector("#chat-message-submit").click();
-    }
-  };
-
-  document.querySelector("#chat-message-submit").onclick = function (e) {
-    const messageInputDom = document.querySelector("#chat-message-input");
-    const message = messageInputDom.value;
-    chatSocket.send(
-      JSON.stringify({
-        "message": message,
-        "command": "new_messages",
-        'from': username,
-      })
+    const roomName = JSON.parse(document.getElementById("room-name").textContent);
+    var username={{username}};
+  // Reconnecting
+    const chatSocket = new WebSocket(
+      "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
     );
-    messageInputDom.value = "";
-  };
 
 
-  function fetchMessages(){
-    chatSocket.send(JSON.stringify({"command":"fetch_messages"}));
-  }
+    chatSocket.onopen=function(e){
+      fetchMessages()
+    }
 
-  function createMessage(data){
-    var author =data['author'];
-			var msgListTag=document.createElement('li');
-			var imgTag=document.createElement('img');
-			var pTag=document.createElement('p');
-			pTag.textContent=data.content;
-			imgTag.src=""
-			if (author === username){
-				msgListTag.className='sent';
-			}
-			else{
-				msgListTag.className='replies';
-			}
-			msgListTag.appendChild(imgTag);
-			msgListTag.appendChild(pTag);
-			document.querySelector('#chat-log').appendChild(msgListTag);
-				}
 
+    chatSocket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+
+
+      if (data['command']==="messages"){
+        for (let i=0; i<data["messages"].length;i++){
+          createMessage(data["messages"][i]);
+        }
+      }else if(data['command']==='new_message'){
+        createMessage(data['message']);
+      }
+
+
+
+      // document.querySelector("#chat-log").value += data.message + "\n";
+    };
+
+    chatSocket.onclose = function (e) {
+      console.error("Chat socket closed unexpectedly");
+    };
+
+    // document.querySelector("#chat-message-input").focus();
+    document.querySelector("#chat-message-input").onkeyup = function (e) {
+      if (e.keyCode === 13) {
+        // enter, return
+        document.querySelector("#chat-message-submit").click();
+      }
+    };
+
+    document.querySelector("#chat-message-submit").onclick = function (e) {
+      const messageInputDom = document.querySelector("#chat-message-input");
+      const message = messageInputDom.value;
+      chatSocket.send(
+        JSON.stringify({
+          "message": message,
+          "command": "new_messages",
+          'from': username,
+        })
+      );
+      messageInputDom.value = "";
+    };
+
+
+    function fetchMessages(){
+      chatSocket.send(JSON.stringify({"command":"fetch_messages"}));
+    }
+
+    function createMessage(data){
+      var author =data['author'];
+  			var msgListTag=document.createElement('li');
+  			var imgTag=document.createElement('img');
+  			var pTag=document.createElement('p');
+  			pTag.textContent=data.content;
+  			imgTag.src=""
+  			if (author === username){
+  				msgListTag.className='sent';
+  			}
+  			else{
+  				msgListTag.className='replies';
+  			}
+  			msgListTag.appendChild(imgTag);
+  			msgListTag.appendChild(pTag);
+  			document.querySelector('#chat-log').appendChild(msgListTag);
+  				}
 </script>
-{%endblock%} {%block javascript%}
- {%endblock%}
+{%endblock%} {%block javascript%} {%endblock%}
