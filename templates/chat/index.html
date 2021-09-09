@@ -38,27 +38,46 @@
 
 <script>
   var contactBox = document.getElementById("contact");
-  $.ajax({
-    url: "{%url 'chat:indexJson'%}",
-    type: "GET",
-    success: function (response) {
-      console.log(response);
-      var users = response.users;
-      users.forEach((user) => {
-        userContactBtn = `
+  function GetData() {
+    $.ajax({
+      url: "{%url 'chat:indexJson'%}",
+      type: "GET",
+      success: function (response) {
+        setTimeout(() => {
+          console.log(response);
+          var users = response.users;
+          users.forEach((user) => {
+            userContactBtn = `
+        <form class="contactForm" data-form-id="${user.id}">
         <button
          class="btn btn-outline-dark btn-sm col-sm-2 mt-2"
          id="user-${user.id}"
-         value="${user.username}"
          >
           ${user.username}</button>
+          </form>
         `;
-        contactBox.innerHTML += `${userContactBtn}`;
+            contactBox.innerHTML += `${userContactBtn}`;
+          });
+          ChatRoomName();
+        }, 700);
+      },
+      error: function (error) {
+        console.log(error);
+      },
+    });
+  }
+  GetData();
+
+  var ChatRoomName = () => {
+    var userContactForm = [...document.getElementsByClassName("contactForm")];
+    userContactForm.forEach((form) => {
+      form.addEventListener("click", (e) => {
+        e.preventDefault();
+        var clickedBtn = e.currentTarget.getAttribute("data-form-id");
+        console.log(clickedBtn);
+        var clickedUserID = document.getElementById(`user-${clickedBtn}`);
       });
-    },
-    error: function (error) {
-      console.log(error);
-    },
-  });
+    });
+  };
 </script>
 {%endblock%}
