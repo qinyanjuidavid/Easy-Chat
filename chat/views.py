@@ -30,6 +30,21 @@ def indexJson(request):
     return JsonResponse(context)
 
 
+def userGetJson(request):
+    if request.is_ajax():
+        pk = request.POST.get("pk")
+        userQs = User.objects.get(id=int(pk))
+        userObj = {
+            "username": userQs.username,
+            "id": userQs.id
+        }
+        context = {
+            "user": userObj
+        }
+        return JsonResponse(context)
+    return JsonResponse({"success": "false"})
+
+
 @login_required
 def room(request, room_name):
     context = {

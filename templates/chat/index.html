@@ -75,6 +75,21 @@
         e.preventDefault();
         var clickedBtn = e.currentTarget.getAttribute("data-form-id");
         console.log(clickedBtn);
+        $.ajax({
+          url: "{%url 'chat:userJson'%}",
+          type: "POST",
+          data: {
+            csrfmiddlewaretoken: "{{csrf_token}}",
+            pk: clickedBtn,
+          },
+          success: function (response) {
+            user = response.user;
+            window.location.pathname = "/chat/" + user.username + "/";
+          },
+          error: function (error) {
+            console.log(error);
+          },
+        });
         var clickedUserID = document.getElementById(`user-${clickedBtn}`);
       });
     });
