@@ -4,4 +4,4 @@ from chat.models import Message
 
 @admin.register(Message)
 class MyAdminMessage(admin.ModelAdmin):
-    list_display = ["author", "timestamp"]
+    list_display = ["contact", "timestamp"]
