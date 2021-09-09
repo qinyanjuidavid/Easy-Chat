@@ -18,6 +18,16 @@
     />
   </div>
 </div>
+<div id="contact"></div>
+{%for user in users%}
+<button
+  class="btn btn-outline-dark btn-sm col-sm-2 mt-2"
+  id="userContact"
+  value="{{user.username}}"
+>
+  {{user.username}}</button
+><br />
+{%endfor%}
 <script>
   document.querySelector("#room-name-input").focus();
   document.querySelector("#room-name-input").onkeyup = function (e) {
@@ -31,6 +41,17 @@
     var roomName = document.querySelector("#room-name-input").value;
     window.location.pathname = "/chat/" + roomName + "/";
   };
+  var contactBox = document.getElementById("contact");
+  $.ajax({
+    url: "{%url 'chat:indexJson'%}",
+    type: "GET",
+    success: function (response) {
+      console.log(response);
+    },
+    error: function (error) {
+      console.log(error);
+    },
+  });
 </script>
 
 {%endblock%} {%block javascript%} {%endblock%}
