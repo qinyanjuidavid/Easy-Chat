@@ -1,9 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 import json
+from chat.models import Chat
+
+
+def get_last_10_messages(chatid):
+    chat = get_object_or_404(Chat, id=chatid)
+    return chat.messages.order_by('-timestamp').all()[:10]
 
 
 def index(request):
@@ -49,7 +55,7 @@ def userGetJson(request):
 def room(request, room_name):
     context = {
         'room_name': room_name,
-        'username': mark_safe(json.dumps(request.user.username))
+        'username': request.user.username
 
     }
     return render(request, "chat/room.html", context)

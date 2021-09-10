@@ -1,18 +1,20 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from chat.models import Message
+from chat.models import Message, Contact, Chat
 from django.contrib.auth.models import User
+from chat.views import get_last_10_messages
 
 
 class ChatConsumer(WebsocketConsumer):
     def fetch_messages(self, data):
-        messages = Message.last_10_messages()
-        content = {
-            'command': 'messages',
-            'messages': self.messages_to_json(messages)
-        }
-        self.send_message(content)
+        print(data)
+        # messages = get_last_10_messages()
+        # content = {
+        #     'command': 'messages',
+        #     'messages': self.messages_to_json(messages)
+        # }
+        # self.send_message(content)
 
     def new_message(self, data):
         author = data['from']
