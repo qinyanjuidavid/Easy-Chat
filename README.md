@@ -308,5 +308,5 @@ class ChatConsumer(AsyncWebsocketConsumer):
           'message': message
       }))
 ```
-
+Linking messages to their respective chat,
 ## Deployment
