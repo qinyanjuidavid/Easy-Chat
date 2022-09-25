@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 import json
-from chat.models import Chat
+from chat.models import Chat, Contact
 
 
 def get_last_10_messages(chatid):
@@ -13,14 +13,19 @@ def get_last_10_messages(chatid):
 
 
 def index(request):
-    usersObj = User.objects.all()
-    context = {"users": usersObj}
+    contacts = Contact.objects.filter(user=request.user)
+    context = {
+        "contacts": contacts,
+    }
     return render(request, "chat/index.html", context)
 
 
 @login_required
 def room(request, room_name):
-    context = {"room_name": room_name, "username": request.user.username}
+    context = {
+        "room_name": room_name,
+        "username": request.user.username,
+    }
     return render(request, "chat/room.html", context)
 
 
