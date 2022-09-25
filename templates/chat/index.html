@@ -1,24 +1,24 @@
-{%extends 'chat/base.html'%} {%block title%}{%endblock%} {%block style%}
-{%endblock%} {%block content%} What chat room would you like to enter?<br />
-<div class="col-sm-6 mt-3">
-  <div class="mb-3">
-    <label for="chat-message-input" class="form-label">Room Name*</label>
-    <input
-      type="text"
-      class="form-control"
-      name="room-name-input"
-      id="room-name-input"
-      placeholder="Enter your room name..."
-    />
-    <input
-      class="btn btn-outline-primary mt-2"
-      id="room-name-submit"
-      type="button"
-      value="Enter"
-    />
+{% extends 'chat/base.html' %}
+<!---->
+{%block title%} Chat {%endblock%}
+<!---->
+{%block content%} What chat room would you like to join?<br />
+<input
+  id="room-name-input"
+  type="text"
+  size="100"
+  placeholder="Room Name"
+/><br />
+<input id="room-name-submit" class="mt-3" type="button" value="Join" />
+{%for contact in contacts%}
+<div class="card board-color-dark">
+  <div class="card-body">
+    <h5 class="card-title"></h5>
+    <p class="card-text"></p>
+    <a href="" class="btn btn-primary">Go somewhere</a>
   </div>
 </div>
-<div id="contact"></div>
+{%endfor%}
 <script>
   document.querySelector("#room-name-input").focus();
   document.querySelector("#room-name-input").onkeyup = function (e) {
@@ -30,69 +30,7 @@
 
   document.querySelector("#room-name-submit").onclick = function (e) {
     var roomName = document.querySelector("#room-name-input").value;
-    window.location.pathname = "/chat/" + roomName + "/";
-  };
-</script>
-
-{%endblock%} {%block javascript%}
-
-<script>
-  var contactBox = document.getElementById("contact");
-  function GetData() {
-    $.ajax({
-      url: "{%url 'chat:indexJson'%}",
-      type: "GET",
-      success: function (response) {
-        setTimeout(() => {
-          console.log(response);
-          var users = response.users;
-          users.forEach((user) => {
-            userContactBtn = `
-        <form class="contactForm" data-form-id="${user.id}">
-        <button
-         class="btn btn-outline-dark btn-sm col-sm-2 mt-2"
-         id="user-${user.id}"
-         >
-          ${user.username}</button>
-          </form>
-        `;
-            contactBox.innerHTML += `${userContactBtn}`;
-          });
-          ChatRoomName();
-        }, 700);
-      },
-      error: function (error) {
-        console.log(error);
-      },
-    });
-  }
-  GetData();
-
-  var ChatRoomName = () => {
-    var userContactForm = [...document.getElementsByClassName("contactForm")];
-    userContactForm.forEach((form) => {
-      form.addEventListener("click", (e) => {
-        e.preventDefault();
-        var clickedBtn = e.currentTarget.getAttribute("data-form-id");
-        console.log(clickedBtn);
-        $.ajax({
-          url: "{%url 'chat:userJson'%}",
-          type: "POST",
-          data: {
-            csrfmiddlewaretoken: "{{csrf_token}}",
-            pk: clickedBtn,
-          },
-          success: function (response) {
-            user = response.user;
-            window.location.pathname = "/chat/" + user.username + "/";
-          },
-          error: function (error) {
-            console.log(error);
-          },
-        });
-        var clickedUserID = document.getElementById(`user-${clickedBtn}`);
-      });
-    });
+    window.location.pathname = "/api/v1/" + roomName + "/";
   };
 </script>
 {%endblock%}

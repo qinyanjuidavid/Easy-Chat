@@ -3,8 +3,8 @@ from chat.models import Message, Contact, Chat
 
 
 @admin.register(Message)
-class MyAdminMessage(admin.ModelAdmin):
-    list_display = ["contact", "timestamp"]
+class messageAdmin(admin.ModelAdmin):
+    list_display = ["contact", "created_at"]
 
 
 admin.site.register(Contact)
