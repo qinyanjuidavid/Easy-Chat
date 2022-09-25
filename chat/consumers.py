@@ -1,16 +1,28 @@
 import json
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
-from chat.models import Contact, Message
+from chat.models import Chat, Contact, Message
 from django.contrib.auth.models import User
+
+from chat.views import get_last_10_messages
 
 
 class ChatConsumer(WebsocketConsumer):
     def fetch_messages(self, data):
-        print(data)
-        # messages = Message.last_10_messages()
-        # content = {"command": "messages", "messages": self.messages_to_json(messages)}
-        # self.send_message(content)
+        # get room messages
+        # Get last 10 messages
+        print("SCOPE", self.scope)
+        messages = Chat.objects.filter(
+            id=self.room_name,
+            participants__in=[self.scope["user"]],
+        )[0].messages.all()
+        print("Messages:::", messages)
+
+        content = {
+            "command": "messages",
+            "messages": self.messages_to_json(messages),
+        }
+        self.send_message(content)
 
     def new_message(self, data):
         author = data["from"]
@@ -19,7 +31,11 @@ class ChatConsumer(WebsocketConsumer):
         contact, _ = Contact.objects.get_or_create(
             user=author_user,
         )
-        message = Message.objects.create(contact=contact, message=data["message"])
+        message = Message.objects.create(
+            contact=contact,
+            message=data["message"],
+        )
+
         content = {
             "command": "new_message",
             "message": self.message_to_json(message),

@@ -84,8 +84,9 @@
   </div>
 </div>
 
-{{ room_name|json_script:"room-name" }}
+{{ room_name|json_script:"room-name" }} {% comment %}
 <script src="{%static 'js/reconnecting-websocket.js' %}"></script>
+{% endcomment %}
 <script>
   const roomName = JSON.parse(document.getElementById("room-name").textContent);
   console.log("Room Name:::", roomName);
@@ -102,7 +103,7 @@
 
   chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
-
+    console.log(data["messages"]);
     if (data["command"] === "messages") {
       for (let i = 0; i < data["messages"].length; i++) {
         createMessage(data["messages"][i]);

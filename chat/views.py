@@ -9,12 +9,28 @@ from chat.models import Chat, Contact
 
 def get_last_10_messages(chatid):
     chat = get_object_or_404(Chat, id=chatid)
-    return chat.messages.order_by("-timestamp").all()[:10]
+    return chat.messages.order_by("-created_at").all()
+
+
+# def get_last_10_messages(chatId):
+#     chat = get_object_or_404(Chat, id=chatId)
+#     return chat.messages.order_by("-timestamp").all()[:10]
+
+
+# def get_user_contact(username):
+#     user = get_object_or_404(User, username=username)
+#     return get_object_or_404(Contact, user=user)
+
+
+# def get_current_chat(chatId):
+#     return get_object_or_404(Chat, id=chatId)
 
 
 def index(request):
+    chat = Chat.objects.filter(participants__in=[request.user])
     contacts = Contact.objects.filter(user=request.user)
     context = {
+        "chats": chat,
         "contacts": contacts,
     }
     return render(request, "chat/index.html", context)
@@ -22,39 +38,9 @@ def index(request):
 
 @login_required
 def room(request, room_name):
+    get_last_10_messages(room_name)
     context = {
         "room_name": room_name,
         "username": request.user.username,
     }
     return render(request, "chat/room.html", context)
-
-
-# def indexJson(request):
-#     usersObj = User.objects.all()
-#     userList = []
-#     for user in usersObj:
-#         item = {
-#             "username": user.username,
-#             "id": user.id
-
-#         }
-#         userList.append(item)
-#     context = {
-#         "users": userList
-#     }
-#     return JsonResponse(context)
-
-
-# def userGetJson(request):
-#     if request.is_ajax():
-#         pk = request.POST.get("pk")
-#         userQs = User.objects.get(id=int(pk))
-#         userObj = {
-#             "username": userQs.username,
-#             "id": userQs.id
-#         }
-#         context = {
-#             "user": userObj
-#         }
-#         return JsonResponse(context)
-#     return JsonResponse({"success": "false"})
