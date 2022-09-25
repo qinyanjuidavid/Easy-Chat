@@ -35,6 +35,13 @@ class ChatConsumer(WebsocketConsumer):
             contact=contact,
             message=data["message"],
         )
+        chat = Chat.objects.filter(
+            id=self.room_name,
+            participants__in=[self.scope["user"]],
+        )[0]
+
+        chat.messages.add(message)
+        chat.save()
 
         content = {
             "command": "new_message",
