@@ -97,13 +97,17 @@
     "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
   );
 
+  console.log("chatSocket:::", chatSocket);
+
   chatSocket.onopen = function (e) {
+    console.log("Connection established!");
     fetchMessages();
   };
 
   chatSocket.onmessage = function (e) {
     const data = JSON.parse(e.data);
-    console.log(data["messages"]);
+    console.log("data:::", data);
+    console.log("MSGS---DTA", data["messages"]);
     if (data["command"] === "messages") {
       for (let i = 0; i < data["messages"].length; i++) {
         createMessage(data["messages"][i]);
