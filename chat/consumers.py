@@ -4,23 +4,15 @@ from channels.generic.websocket import WebsocketConsumer, AsyncWebsocketConsumer
 from chat.models import Chat, Contact, Message
 from django.contrib.auth.models import User
 
-from chat.views import get_last_10_messages
-
 
 class ChatConsumer(WebsocketConsumer):
     def fetch_messages(self, data):
-        # get room messages
-        # Get last 10 messages
         print("SCOPE", self.scope)
         messages = Chat.objects.filter(
             id=self.room_name,
             participants__in=[self.scope["user"]],
         )[0].messages.all()
         print("Messages:::", messages)
-
-        # get messages id
-        for message in messages:
-            print(message.id)
 
         content = {
             "command": "messages",
@@ -101,12 +93,14 @@ class ChatConsumer(WebsocketConsumer):
         self.commands[data["command"]](self, data)
 
     def send_chat_message(self, message):
+        print("Chat message:::", message)
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {"type": "chat_message", "message": message},
         )
 
     def send_message(self, message):
+        print("Send message:::", message)
         self.send(text_data=json.dumps(message))
 
     # Receive message from room group

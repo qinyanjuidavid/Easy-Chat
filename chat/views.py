@@ -27,13 +27,28 @@ def get_last_10_messages(chatid):
 
 
 def index(request):
-    chat = Chat.objects.filter(participants__in=[request.user])
+    chat = Chat.objects.filter(
+        messages__isnull=False,
+        participants__in=[request.user],
+    ).distinct()
+
+    # chat = Chat.objects.filter(participants__in=[request.user])
     contacts = Contact.objects.filter(user=request.user)
     context = {
         "chats": chat,
         "contacts": contacts,
     }
     return render(request, "chat/index.html", context)
+
+
+# create a new chat
+def new_chat(request, username):
+    user_contact = get_object_or_404(Contact, user__username=username)
+    chat, _ = Chat.objects.get_or_create(
+        participants__in=[request.user, user_contact.user]
+    )
+    chat.participants.add(request.user, user_contact.user)
+    return chat
 
 
 @login_required
