@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 import json
 from chat.models import Chat, Contact
+from django.db.models import Q
 
 
 def get_last_10_messages(chatid):
@@ -28,7 +29,7 @@ def get_user_contact(username):
 
 def index(request):
     chat = Chat.objects.filter(
-        messages__isnull=False,
+        # messages__isnull=False,
         participants__in=[request.user],
     ).distinct()
 
@@ -47,19 +48,18 @@ def index(request):
 # create a new chat
 def new_chat(request, username):
     user_contact = get_user_contact(username)
-    chat = Chat.objects.filter(
-        participants__in=[request.user, user_contact.user],
-    )
-    if chat.exists():
-        print(user_contact)
-        print("Chat", chat)
-    else:
-        chat = Chat.objects.create()
-        chat.participants.add(user_contact.user)
-        chat.participants.add(request.user)
-    # redirect to the room
-    # return redirect("chat:room", chat.id)
-    return redirect("chat:room", chat[0].id)
+    chats = Chat.objects.filter(
+        participants__in=[request.user],
+    ).distinct()
+
+    for chat in chats:
+        if user_contact.user in chat.participants.all():
+            return redirect("chat:room", chat.id)
+
+    chat = Chat.objects.create()
+    chat.participants.add(request.user, user_contact.user)
+    chat.save()
+    return redirect("chat:room", chat.id)
 
 
 @login_required
