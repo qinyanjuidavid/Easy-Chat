@@ -48,10 +48,18 @@ def index(request):
 
 
 # Create Contact
-# def new_contact(request, username):
-#     contact_query, _ = Contact.objects.get_or_create(
-#         user=request.user,
-#     )
+def new_contact(request, username):
+    contact_query, _ = Contact.objects.get_or_create(
+        user=request.user,
+    )
+    userqs = User.objects.filter(username=username)
+    for contact in contact_query:
+        if userqs in contact_query.friends.all():
+            print("Already a friend")
+    contact = Contact.objects.create()
+    contact.friends.add(userqs)
+    contact.save()
+    return redirect("chat:index")
 
 
 # create a new chat
