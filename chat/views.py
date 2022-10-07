@@ -36,14 +36,22 @@ def index(request):
     contacts = Contact.objects.filter(
         user=request.user,
     )
+
+    users = User.objects.exclude(id=request.user.id)
     context = {
+        "users": users,
         "chats": chat,
         "contacts": contacts,
     }
     return render(request, "chat/index.html", context)
 
 
-# Chats Above will not be displayed if they dont have message
+# Create Contact
+# def new_contact(request, username):
+#     contact_query, _ = Contact.objects.get_or_create(
+#         user=request.user,
+#     )
+
 
 # create a new chat
 def new_chat(request, username):
