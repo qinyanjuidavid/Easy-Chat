@@ -27,6 +27,7 @@ def get_user_contact(username):
 #     return get_object_or_404(Chat, id=chatId)
 
 
+@login_required
 def index(request):
     chat = Chat.objects.filter(
         # messages__isnull=False,
@@ -54,6 +55,7 @@ def index(request):
 
 
 # create a new chat
+@login_required
 def new_chat(request, username):
     user_contact = get_user_contact(username)
     chats = Chat.objects.filter(

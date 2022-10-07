@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "crispy_forms",
     "chat",
+    "accounts",
     "channels",
 ]
 CRISPY_TEMPLATE_PACK = "bootstrap4"
@@ -132,3 +133,8 @@ STATI_ROOT = os.path.join(BASE_DIR, "staticfiles")
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# login
+LOGIN_REDIRECT_URL = "chat:index"
+LOGIN_URL = "accounts:login"
+LOGOUT_REDIRECT_URL = "accounts:login"

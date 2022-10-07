@@ -1,0 +1,43 @@
+{%extends 'chat/base.html'%}
+<!---->
+{%load crispy_forms_tags%} {%load static%} {%block content%}
+<section>
+  <div class="container">
+    <div class="jum" align="center">
+      <div class="col-12 col-sm-5" align="left">
+        <br /><br />
+        <div
+          class="card shadow-lg"
+          style="background-color: #444444; border-color: #444444"
+        >
+          <div class="card-header bg-success">
+            <legend style="color: #fff">Welcome Back,</legend>
+            <h6 style="color: #fff">sign in to continue</h6>
+          </div>
+          <div class="card-body" style="background-color: #fff; color: dark">
+            <form method="POST" action="" enctype="multipart/form-data">
+              {%csrf_token%} {{form|crispy}}
+              <div class="btton">
+                <p align="left">
+                  <button
+                    href="#"
+                    class="btn btn-outline-primary border-w-2 btn-md mt-2"
+                  >
+                    Sign In
+                  </button>
+                </p>
+              </div>
+            </form>
+            <div class="forgot m-1" align="left">
+              <a class="text-dark" href="{%url 'accounts:register'%}"
+                ><small>Don't have an account?</small></a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{%endblock%}
