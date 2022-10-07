@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -17,9 +17,9 @@ def get_last_10_messages(chatid):
 #     return chat.messages.order_by("-timestamp").all()[:10]
 
 
-# def get_user_contact(username):
-#     user = get_object_or_404(User, username=username)
-#     return get_object_or_404(Contact, user=user)
+def get_user_contact(username):
+    user = get_object_or_404(User, username=username)
+    return get_object_or_404(Contact, user=user)
 
 
 # def get_current_chat(chatId):
@@ -32,8 +32,9 @@ def index(request):
         participants__in=[request.user],
     ).distinct()
 
-    # chat = Chat.objects.filter(participants__in=[request.user])
-    contacts = Contact.objects.filter(user=request.user)
+    contacts = Contact.objects.filter(
+        user=request.user,
+    )
     context = {
         "chats": chat,
         "contacts": contacts,
@@ -41,14 +42,24 @@ def index(request):
     return render(request, "chat/index.html", context)
 
 
+# Chats Above will not be displayed if they dont have message
+
 # create a new chat
 def new_chat(request, username):
-    user_contact = get_object_or_404(Contact, user__username=username)
-    chat, _ = Chat.objects.get_or_create(
-        participants__in=[request.user, user_contact.user]
+    user_contact = get_user_contact(username)
+    chat = Chat.objects.filter(
+        participants__in=[request.user, user_contact.user],
     )
-    chat.participants.add(request.user, user_contact.user)
-    return chat
+    if chat.exists():
+        print(user_contact)
+        print("Chat", chat)
+    else:
+        chat = Chat.objects.create()
+        chat.participants.add(user_contact.user)
+        chat.participants.add(request.user)
+    # redirect to the room
+    # return redirect("chat:room", chat.id)
+    return redirect("chat:room", chat[0].id)
 
 
 @login_required

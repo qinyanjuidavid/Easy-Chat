@@ -36,7 +36,9 @@
     <!--contact list-->
     <ul class="list-group">
       {%for contact in contacts%} {%for friend in contact.friends.all%}
-      <li class="list-group-item">{{friend.user.username}}</li>
+      <a href="{%url "chat:new_chat" friend.user.username%}">
+        <li class="list-group-item">{{friend.user.username}}</li>
+      </a>
       {%endfor%} {%endfor%}
     </ul>
   </div>
